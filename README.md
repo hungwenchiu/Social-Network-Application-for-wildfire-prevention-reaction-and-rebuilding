@@ -14,6 +14,11 @@ YOU ARE *NOT* PERMITTED TO SHARE THIS REPO OUTSIDE THIS GITHUB ORG. YOU ARE *NOT
 //     send http request 
 // }
 
+### API document link:
+import this link into postman:\
+https://www.getpostman.com/collections/50c040d8209e6717796b
+
+
 #### simplified git flow:
 #### step01: git pull
 #### -> sync up with remote branch 
@@ -34,7 +39,7 @@ YOU ARE *NOT* PERMITTED TO SHARE THIS REPO OUTSIDE THIS GITHUB ORG. YOU ARE *NOT
 \>
 
 Co-authored-by: azhou2 <zhou.andy98@gmail.com>
-Co-authored-by: xiaoyanfeifei <zhou.andy98@gmail.com>
+Co-authored-by: xiaoyanfeifei <yanfeipgmm@gmail.com>
 Co-authored-by: uopsdod <uopsdod@gmail.com>
 "
 #### step08: git push 

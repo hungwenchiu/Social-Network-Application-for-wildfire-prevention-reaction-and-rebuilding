@@ -4,78 +4,9 @@ const blacklist = blacklistModel.getBlacklist();
 const bcrypt = require("bcryptjs");
 const HttpResponse = require("./httpResponse.js");
 const userModel = require("../models/userModel.js");
+const authService = require("../utils/auth.js");
+const SocketioService = require("../utils/socketio");
 
-// (deprecated)
-const retrieveUserHelper = function (username) {
-  return new Promise((resolve, reject) => {
-    const sql_check_user = "SELECT * FROM user WHERE username = ?";
-    mydb.getConnection().query(sql_check_user, username, (err, result) => {
-      if (!err) {
-        resolve(result);
-      } else {
-        resolve({
-          status: "error",
-          message: "Error Getting Data",
-          debug: err,
-        });
-      }
-    });
-  });
-};
-
-// (deprecated)
-async function retrieveUser(username, password) {
-  //   var resMsg;
-
-  // if user is in the blacklist
-  if (blacklist.includes(username.toLowerCase())) {
-    return new HttpResponse(
-      "Username is in blacklist. Please try again.",
-      "invalidUsername",
-      "true"
-    );
-  }
-
-  try {
-    console.log("hey000");
-    var result = await retrieveUserHelper(username);
-  } catch (error) {
-    console.log(error);
-  }
-  if (result.length > 0) {
-    console.log("hey001");
-    // username exists, further check if password is correct (login) or incorrect (must reenter => display error to user)
-    //   const username_in_db = result[0].username;
-    //   const password_in_db = result[0].password;
-
-    const isMatch = await bcrypt.compare(password, result[0].password);
-    if (isMatch) {
-      //successful login http response
-      console.log("hey003"); // go here
-      return new HttpResponse(
-        "User is logged in successfully.",
-        "loginSuccessful",
-        "false"
-      );
-    } else {
-      console.log("hey004");
-      //incorrect password http response
-      return new HttpResponse(
-        "Username and/or password is incorrect. Please try again.",
-        "passwordIncorrect",
-        "true"
-      );
-    }
-    // bcrypt.compare(password, result[0].password, (err, isMatch) => {
-    //   console.log("hey002");
-    //   if (err) throw (err);
-    // });
-  } else {
-    // if username doesn't exist, ask for comfirmation
-    console.log("hey005");
-    return new HttpResponse("User doesn't exist.", "userNotExist", "true");
-  }
-}
 
 async function findUserByNameWithoutPwd(username) {
   var resMsg = checkUsernameFormat(username);
@@ -85,6 +16,7 @@ async function findUserByNameWithoutPwd(username) {
   resMsg = await userModel
     .findUserByNameWithoutPwd(username)
     .then((dbResult) => {
+      //TODO: 
       return new HttpResponse(
         "User Search OK.",
         "userSearchOk",
@@ -111,7 +43,11 @@ async function createUser(username, password) {
   resMsg = await userModel
     .create(username, password)
     .then((dbResult) => {
-      return new HttpResponse("User is created.", "userCreated", "false");
+      return userModel.setUserOnline(username);
+    })
+    .then( (result) => {
+      const token = authService.getInstance().generate_token({"username":username});
+      return new HttpResponse("User is created.", "userCreated", "false", {"token": token});
     })
     .catch((err) => {
       return new HttpResponse("db error.", "dbError", "true", err);
@@ -119,8 +55,8 @@ async function createUser(username, password) {
   return resMsg;
 }
 
-// TODO: move to model
 async function login(username, password) {
+  
   var resMsg = "";
   if (resMsg !== "") {
     return new HttpResponse(resMsg, "invalidPassword", "true");
@@ -131,17 +67,27 @@ async function login(username, password) {
       if (userList.length == 0) {
         throw new Error("user not found");
       }
-      const isMatch = bcrypt.compare(password, userList[0].password);
-      return isMatch; // return a Promis; we'll wait for it to finish before continuing
+      const isMatch = bcrypt.compareSync(password, userList[0].password)
+      
+      return {
+        isMatch: isMatch,
+        user: userList[0]
+      }; // return a Promis; we'll wait for it to finish before continuing
     })
-    .then((isMatch) => {
-      if (isMatch) {
+    .then((result) => {
+      if (result.isMatch) {
         // successful login http response
-        // TODO: add JWT token logic here
+        userModel.setUserOnline(username)
+        
+        
+        
+        // create JWT token logic here
+        const token = authService.getInstance().generate_token(result);
         return new HttpResponse(
           "User is logged in successfully.",
           "loginSuccessful",
-          "false"
+          "false",
+          {"token": token}
         );
       } else {
         // incorrect password http response
@@ -173,6 +119,66 @@ function checkUsernameFormat(username) {
   return resMsg;
 }
 
+function verifyJwtToken(req, res, next) {
+  //TODO: verify the token is not in blacklist
+  var token = req.headers['authorization']
+  if (token) {
+      token = token.replace("Bearer ", "") 
+  }
+  if (token) {
+    const is_token_valid = authService.getInstance().is_token_valid(token);
+    if (is_token_valid == false) {
+      return res.status(403).send(new HttpResponse(
+        "Token Invalid",
+        "TokenInvalid",
+        "true"
+      ));      
+    }else {
+      console.log("token verified");
+      next();
+    }
+  } else {
+    return res.status(403).send(new HttpResponse(
+      "No Token Provided",
+      "NoTokenProvided",
+      "true"
+    ))
+  }
+}
+
+async function logout(username, token) {
+
+  //TODO: if token not expired, put it in blacklist
+  await(userModel.setUserOffline(username));
+  authService.getInstance().add_loggedout_token(token);
+  console.log("remove socket of username: " + username)
+  const result = await SocketioService.getInstance().removeSocket(username);
+  return new HttpResponse("Socket is removed.", "socketRemoved", "false");  
+}
+
+async function getAllUsersWithoutPwd() {
+  var resMsg = await userModel
+    .getAllUsersWithoutPwd()
+    .then((dbResult) => {
+      return new HttpResponse(
+        "Get All Users OK.",
+        "getAllUsersOk",
+        "false",
+        dbResult
+      );
+    })
+    .catch((err) => {
+      return new HttpResponse(
+        "Get All Users Failed.",
+        "getAllUsersFailed",
+        "true",
+        err
+      );
+    });
+  return resMsg;
+
+}
+
 // checkPasswordFormat = (password) => {
 //   var resMsg = "";
 //   if (password.length < 4) {
@@ -182,8 +188,10 @@ function checkUsernameFormat(username) {
 // };
 
 module.exports = {
-  register: retrieveUser, // (deprecated)
   createUser: createUser,
   findUserByNameWithoutPwd: findUserByNameWithoutPwd,
+  getAllUsersWithoutPwd: getAllUsersWithoutPwd,
   login: login,
+  verifyJwtToken: verifyJwtToken,
+  logout: logout
 };
