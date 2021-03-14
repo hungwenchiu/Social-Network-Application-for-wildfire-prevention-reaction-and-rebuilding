@@ -31,7 +31,8 @@ app.use(express.urlencoded({ extended: false }));
 
 //Establish router
 //app.use("/", main_router); /*replace index with name of router,js*/
-app.use("/", require("./routers/index.js"));
+app.use("/api", require("./routers/index.js"));
+app.use("/", require("./routers/viewRouters.js"));
 
 //Start up server
 const PORT = process.env.PORT || 8080;

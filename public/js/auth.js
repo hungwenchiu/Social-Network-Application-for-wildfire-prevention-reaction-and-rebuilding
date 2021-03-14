@@ -11,7 +11,7 @@ $(document).ready(() => {
     };
     console.log(sendData.username);
     $.ajax({
-      url: `/users/${sendData.username}`,
+      url: `/api/users/${sendData.username}`,
       type: "GET",
       dataType: "json",
       success: function (res) {
@@ -22,8 +22,8 @@ $(document).ready(() => {
           } else {
             // login
             $.ajax({
-              url: "/users/login",
-              type: "POST",
+              url: `/api/users/${sendData.username}/online`,
+              type: "PUT",
               data: sendData,
               dataType: "json",
               success: function (
@@ -32,8 +32,7 @@ $(document).ready(() => {
                 // Login successful, token assigned
                 if (res.resCode === "loginSuccessful") {
                   sessionStorage.setItem("username", $("#username").val());
-                  sessionStorage.setItem("token", res.data.token);
-                  window.location.href = "/chatroom";
+                  window.location.href = window.location.origin + "/chatroom";
                   return;
                 } else {
                   warningMsg.toggleClass("fade-in");
@@ -66,7 +65,7 @@ $(document).ready(() => {
 
     // create new user
     $.ajax({
-      url: "/users",
+      url: "/api/users",
       type: "POST",
       data: sendData,
       dataType: "json",
@@ -76,9 +75,8 @@ $(document).ready(() => {
           if (res.resCode === "userCreated") 
           {
             sessionStorage.setItem("username", $("#username").val());
-            sessionStorage.setItem("token", res.data.token);
             $("#register-msg").modal("hide");
-            location.href = "welcome";
+            window.location.href = window.location.origin + "/welcome";
           }
       },
     });

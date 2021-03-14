@@ -3,54 +3,27 @@ const router = express.Router();
 const registerController = require('../controllers/registerController.js');
 const chatController = require('../controllers/chatController.js');
 const HttpResponse = require('../controllers/httpResponse.js');
+const cookieParser = require('cookie-parser');
 
-//const path = require("path");
 
-//home page
-// router.get("/" , (req, res) => res.sendFile(path.join(__dirname, "../views", "homepage.html")));
-// // res.sendFile('/chat/view_client.html', { root: './' });
-// //join community page
-
-// router.get("/login" , (req, res) => res.sendFile(path.join(__dirname, "../views", "login.html")));
-// // http://localhost:8080/login.html
-
-router.get("/", (req, res) => {
-  res.render("homepage");
-});
-
-router.get("/socketiotest", (req, res) => {
-  res.render("socketiotest");
-});
-
-router.get("/joincommunity", (req, res) => {
-  res.render("registration");
-});
-
-router.get("/confirmation", (req, res) => {
-  res.render("confirmation");
-});
-
-router.get("/welcome", (req, res) => {
-  res.render("welcome");
-});
-
-router.get("/chatroom", (req, res) => {
-  res.render("chatroom");
-});
+router.use(cookieParser());
 
 router.post("/users", async function(req, res) {
 
   const {username, password} = req.body;
   const resMsg = await registerController.createUser(username, password);
+  res.cookie("token", resMsg.data.token, { maxAge: 900000, httpOnly: true });
   res.send(resMsg);
 });
 
-router.post("/users/login", async function(req, res) {
-
-  const {username, password} = req.body;
+router.put("/users/:username/online", async function (req, res) {
+  const { password } = req.body;
+  const { username } = req.params;
   const resMsg = await registerController.login(username, password);
+  if (resMsg.data !== undefined) {
+    res.cookie("token", resMsg.data.token, { maxAge: 900000, httpOnly: true });
+  }
   res.send(resMsg);
-
 });
 
 //TODO: DO WE ADD JWT AUTH HERE FOR RETRIEVE USERS
@@ -74,17 +47,18 @@ router.get("/users/:username", async function(req, res) {
   res.send(resMsg); 
 });
 
+
 router.use(registerController.verifyJwtToken) // jwt validation middle ware 
+
 
 /** User RESTful API zone **/
 // /users/:username/offline
 router.put("/users/:username/offline", async function(req, res) {
   
   const {username} = req.params;
-  //const token = req.headers.authorization.slice(7);
   const token = req.headers.authorization
-
   var resMsg = await registerController.logout(username, token);
+  res.clearCookie("token");
   res.send(resMsg);
 
 });

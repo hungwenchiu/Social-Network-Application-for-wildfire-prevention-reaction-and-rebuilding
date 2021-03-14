@@ -54,11 +54,8 @@ $(document).ready(() => {
     
     // when loading, get all message records
     $.ajax({
-        url: "/messages/public",
+        url: "/api/messages/public",
         type: "GET",
-        headers: {
-            'Authorization': sessionStorage.getItem('token')
-        }, 
         success: function (res) {
             
             const {data} = res;
@@ -86,13 +83,10 @@ $("#btn-send").on("submit", (e) => {
     };
         
     $.ajax({
-        url: "/messages/public",
+        url: "/api/messages/public",
         type: "POST",
         data: sendData, // const {username, content, status, isOnline} = req.body;
         dataType: "json",
-        headers: {
-            'Authorization': sessionStorage.getItem('token')
-        }, 
         success: function (
             res // get return message from server
         ) {
@@ -107,18 +101,15 @@ $("#btn-send").on("submit", (e) => {
 $(".logout-btn").on("click", (e)=>{
 
     $.ajax({
-        url: `/users/${username}/offline`,
+        url: `/api/users/${username}/offline`,
         type: "PUT",
         data: username, // const {username, content, status, isOnline} = req.body;
         dataType: "json",
-        headers: {
-            'Authorization': sessionStorage.getItem('token')
-        }, 
+
         success: function (
             res // get return message from server
         ) {
             sessionStorage.removeItem("username");
-            sessionStorage.removeItem("token");
             window.location.href = "/";
         },
     });

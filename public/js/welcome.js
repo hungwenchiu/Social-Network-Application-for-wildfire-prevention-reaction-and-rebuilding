@@ -2,7 +2,7 @@ $("#form-confirm").submit((e) =>{
     e.preventDefault();
      // login
     $.ajax({
-        url: "/users/login",
+        url: "/api/users/login",
         type: "POST",
         data: sendData,
         dataType: "json",

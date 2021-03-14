@@ -1,38 +1,11 @@
 const userList = $("#user-list");
 $(document).ready(() => {
   getUserList();
-  // $.ajax({
-  //   url: "/users",
-  //   type: "GET",
-  //   dataType: "json",
-  //   success: function (res) {
-  //     console.log(res);
-  //     //add each user to html
-  //     $.each(res.data, (index, user) => {
-  //       const username = user.username;      
-  //       const onlineStatus = user.isonline == 1 ? "online" : "offline";     
-  //       //TODO: status is hardcode
-  //       const img = getStatusImage("ok", onlineStatus);
-  //       const userCard =
-  //         `<a href="#" class="list-group-item list-group-item-action border-0">` +
-  //         `<div class="d-flex align-items-start">` +
-  //         `<img src=${img} class="rounded-circle mr-1" width="40" height="40">` +
-  //         `<div class="flex-grow-1 ml-3">` +
-  //         `${username}` +
-  //         `<div class="small"></span>${onlineStatus}</div>` +
-  //         `</div>` +
-  //         `</div>` +
-  //         `</a>`;
-  //       userList.append(userCard);
-  //     });
-  //   },
-  // });
-  // add new message
 });
 
 const getUserList = function() {
     $.ajax({
-    url: "/users",
+    url: "/api/users",
     type: "GET",
     dataType: "json",
     success: function (res) {

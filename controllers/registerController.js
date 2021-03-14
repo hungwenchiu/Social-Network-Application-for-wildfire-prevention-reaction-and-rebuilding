@@ -121,28 +121,30 @@ function checkUsernameFormat(username) {
 
 function verifyJwtToken(req, res, next) {
   //TODO: verify the token is not in blacklist
-  var token = req.headers['authorization']
+  var token = req.headers['authorization'] || req.cookies.token;
   if (token) {
       token = token.replace("Bearer ", "") 
   }
   if (token) {
     const is_token_valid = authService.getInstance().is_token_valid(token);
     if (is_token_valid == false) {
-      return res.status(403).send(new HttpResponse(
-        "Token Invalid",
-        "TokenInvalid",
-        "true"
-      ));      
+      return res.status(403).redirect("/");       
+      // return res.status(403).send(new HttpResponse(
+      //   "Token Invalid",
+      //   "TokenInvalid",
+      //   "true"
+      // ));      
     }else {
       console.log("token verified");
       next();
     }
   } else {
-    return res.status(403).send(new HttpResponse(
-      "No Token Provided",
-      "NoTokenProvided",
-      "true"
-    ))
+    return res.status(403).redirect("/");       
+    // return res.status(403).send(new HttpResponse(
+    //   "No Token Provided",
+    //   "NoTokenProvided",
+    //   "true"
+    // ))
   }
 }
 
