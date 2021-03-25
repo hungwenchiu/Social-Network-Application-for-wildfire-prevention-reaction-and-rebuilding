@@ -17,7 +17,7 @@ CREATE TABLE msg (
     ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE privateMsg (
+CREATE TABLE privatemsg (
     msgid int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     content varchar(255),
     senderName varchar(255) NOT NULL,
