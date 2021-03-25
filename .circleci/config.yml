@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Run test
           command: |
-            npm testlocal
+            npm run testlocal
       - store_test_results:
           path: coverage
       - store_artifacts:
