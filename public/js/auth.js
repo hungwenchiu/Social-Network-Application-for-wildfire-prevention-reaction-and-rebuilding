@@ -1,6 +1,11 @@
 $(document).ready(() => {
+  sessionStorage.removeItem("talkingToUsername");
+  sessionStorage.removeItem("privateMsgUserJson");
   var btnLogin = $(".btnSubmit");
   var warningMsg = $("#warning-msg");
+
+  // clear/initialize sessionStorage 
+  sessionStorage.clear();
 
   // submit the username and password
   $("#lgform").on("submit", (e) => {
@@ -32,7 +37,8 @@ $(document).ready(() => {
                 // Login successful, token assigned
                 if (res.resCode === "loginSuccessful") {
                   sessionStorage.setItem("username", $("#username").val());
-                  window.location.href = window.location.origin + "/chatroom";
+                  sessionStorage.setItem("userstatus", res.data.userstatus);
+                  window.location.href = window.location.origin + "/esnDir";
                   return;
                 } else {
                   warningMsg.toggleClass("fade-in");

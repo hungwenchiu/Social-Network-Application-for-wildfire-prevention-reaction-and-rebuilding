@@ -49,6 +49,11 @@ async function createUser(username, password) {
       const token = authService.getInstance().generate_token({"username":username});
       return new HttpResponse("User is created.", "userCreated", "false", {"token": token});
     })
+    .then((result) => {
+      // when a user login, broadcast updated userlist to all online users
+      const result2 = SocketioService.getInstance().updateUserlist();
+      return result;
+    })
     .catch((err) => {
       return new HttpResponse("db error.", "dbError", "true", err);
     });
@@ -67,8 +72,8 @@ async function login(username, password) {
       if (userList.length == 0) {
         throw new Error("user not found");
       }
-      const isMatch = bcrypt.compareSync(password, userList[0].password)
       
+      const isMatch = bcrypt.compareSync(password, userList[0].password)
       return {
         isMatch: isMatch,
         user: userList[0]
@@ -79,15 +84,17 @@ async function login(username, password) {
         // successful login http response
         userModel.setUserOnline(username)
         
-        
-        
         // create JWT token logic here
         const token = authService.getInstance().generate_token(result);
         return new HttpResponse(
           "User is logged in successfully.",
           "loginSuccessful",
           "false",
-          {"token": token}
+          {
+            "token": token,
+            "username": result.user.username,
+            "userstatus": convertToStatusDescription(result.user.status)
+          }
         );
       } else {
         // incorrect password http response
@@ -97,6 +104,12 @@ async function login(username, password) {
           "true"
         );
       }
+    })
+    .then((result) => {
+
+       // when a user login, broadcast updated userlist to all online users
+       const result2 = SocketioService.getInstance().updateUserlist();
+       return result;
     })
     .catch((err) => {
       return new HttpResponse("db error.", "dbError", "true", err.message);
@@ -155,6 +168,10 @@ async function logout(username, token) {
   authService.getInstance().add_loggedout_token(token);
   console.log("remove socket of username: " + username)
   const result = await SocketioService.getInstance().removeSocket(username);
+
+  // when a user login/ logout, broadcast updated userlist to all online users
+  const result2 = await SocketioService.getInstance().updateUserlist();
+
   return new HttpResponse("Socket is removed.", "socketRemoved", "false");  
 }
 
@@ -162,6 +179,7 @@ async function getAllUsersWithoutPwd() {
   var resMsg = await userModel
     .getAllUsersWithoutPwd()
     .then((dbResult) => {
+      
       return new HttpResponse(
         "Get All Users OK.",
         "getAllUsersOk",
@@ -188,6 +206,17 @@ async function getAllUsersWithoutPwd() {
 //   }
 //   return resMsg;
 // };
+
+function convertToStatusDescription(statusCode){
+  if (statusCode === "1") {
+    return "OK";
+  }else if (statusCode === "2") {
+    return "HELP";
+  }else if (statusCode === "3") {
+    return "EMERGENCY";
+  }
+  return statusCode;
+}
 
 module.exports = {
   createUser: createUser,

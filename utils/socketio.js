@@ -51,6 +51,46 @@ class MySocketIOService {
         })
     } 
 
+    pushMsgToUser(msg, topic, username) {
+        return new Promise((resolve, reject) => {
+            if (this.usernameSocketMap.has(username)) {
+                const sokcet = this.usernameSocketMap.get(username);
+                sokcet.emit(topic, msg);
+                resolve("msg pushed to " + username);
+            }else{
+                resolve("user is not online");
+            }
+            
+        })
+
+    }
+    // pushMsg(msg, username) {
+    //     return new Promise((resolve, reject) => {
+    //         const socket = this.usernameSocketMap.get(username);
+    //         socket.emit(msg);
+    //         resolve("msg pushed to " + username);
+    //     })
+    // }   
+
+    updateStatus(status, name) {
+        return new Promise((resolve, reject) => {
+            this.usernameSocketMap.forEach((socket, username, map)=>{
+                socket.emit('update status', [status, name]);
+            })
+            resolve("update status");
+        })
+    } 
+
+    // (dynamic update) If user login or logout, broadcast the updated userlist to all online users
+    updateUserlist() {
+        return new Promise((resolve, reject) => {
+            this.usernameSocketMap.forEach((socket, username, map)=>{
+                socket.emit('update userlist');
+            })
+            resolve("update userlist");
+        })
+    } 
+
     removeSocket(username) {
         return new Promise((resolve, reject) => {
             if (this.usernameSocketMap.has(username)) {

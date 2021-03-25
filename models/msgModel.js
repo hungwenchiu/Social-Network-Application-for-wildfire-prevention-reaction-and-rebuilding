@@ -13,7 +13,7 @@ class Msg {
     static create(content, sendername, senderstatus, senderisonline, receivername) {
         var senderisonline = (senderisonline == 1)?"true":"false";
         return new Promise((resolve, reject) => {
-            const sql_create_msg = "INSERT INTO Msg (content, sendername, senderstatus, senderisonline, receivername) VALUES ?";
+            const sql_create_msg = "INSERT INTO msg (content, sendername, senderstatus, senderisonline, receivername) VALUES ?";
             const values = [
             [content, sendername, senderstatus, senderisonline, receivername]
             ];
@@ -29,7 +29,7 @@ class Msg {
 
     static findMsg(msgid) {
         return new Promise((resolve, reject) => {
-            const sql_query_msg = "SELECT * FROM Msg WHERE msgid = ?";
+            const sql_query_msg = "SELECT * FROM msg WHERE msgid = ?";
             const values = [
                 [msgid]
             ];
@@ -45,7 +45,7 @@ class Msg {
 
     static findPublicMsgs() {
         return new Promise((resolve, reject) => {
-            const sql_query_public_msg = "SELECT * FROM Msg WHERE receivername IS NULL ORDER BY ts ASC";
+            const sql_query_public_msg = "SELECT * FROM msg WHERE receivername IS NULL ORDER BY ts ASC";
             mydb.getConnection().awaitQuery(sql_query_public_msg)
             .then((result) => {
                 resolve(result);

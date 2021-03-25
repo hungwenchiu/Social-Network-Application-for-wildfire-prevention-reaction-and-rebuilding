@@ -18,10 +18,32 @@ router.get("/welcome", (req, res) => {
   res.render("welcome");
 });
 
+
 router.use(registerController.verifyJwtToken); // jwt validation middle ware
+
+router.get("/status", (req, res) => {
+  res.render("status");
+});
+
+router.get("/esnDir", (req, res) => {
+  res.render("esnDir");
+});
 
 router.get("/chatroom", (req, res) => {
   res.render("chatroom");
 });
+
+router.get("/privateChatroom", (req, res) => {
+  res.render("privateChatroom");
+});
+
+router.get("/privateMsgs", (req, res) => {
+  res.render("privateMsgs");
+});
+
+router.get("/status", (req, res) => {
+  res.render("status");
+})
+
 
 module.exports = router;

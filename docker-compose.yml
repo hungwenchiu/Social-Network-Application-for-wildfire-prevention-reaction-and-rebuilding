@@ -1,0 +1,39 @@
+version: "3.7"
+services: 
+  mysql-db:
+    container_name: mydb
+    build:
+      context: ./localdb
+    image: uopsdod/mysql-db-01
+    ports: 
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    networks:
+      my-bridge-001:
+    volumes:
+      - db-data:/var/lib/mysql
+  javascript-app:
+    container_name: myapp
+    build:
+      context: ./
+    image: uopsdod/javascript-app-01
+    ports:
+      - "8080:8080"
+    command: ./wait-for-it.sh mydb:3306 -- node main.js
+    environment:
+      - MYSQL_HOST_URL=mydb
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    networks:
+      my-bridge-001:
+networks:
+  my-bridge-001:
+
+volumes:
+  db-data:

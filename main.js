@@ -15,6 +15,8 @@ const main_router = require("./routers/index");
 const app = express();
 const server = http.createServer(app);
 const SocketioService = require("./utils/socketio");
+const cors = require('cors');
+app.use(cors());
 
 //Set up EJS
 //app.use(expressLayouts);

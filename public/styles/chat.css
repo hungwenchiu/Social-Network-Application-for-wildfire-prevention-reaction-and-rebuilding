@@ -24,6 +24,21 @@ body {
     box-sizing: border-box;
 }
 
+/* ESN directory animation */
+#user-list .list-group-item {
+    left: -150%;
+    -webkit-animation: slide 0.4s forwards;
+    /* -webkit-animation-delay: 2s; */
+    /* animation: slide 0.5s forwards; */
+    /* animation-delay: 2s; */
+}
+
+@-webkit-keyframes slide {
+    100% { left: 0; }
+}
+
+
+
 #wrapper {
     overflow-x: hidden;
 }
@@ -44,6 +59,7 @@ body {
     width: 15rem;
     padding-bottom: 10px;
 }  */
+
 #page-content-wrapper {
     min-width: 100vw;
 } 

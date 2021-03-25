@@ -2,6 +2,7 @@ const SocketioService = require("../utils/socketio");
 const MsgModel = require("../models/msgModel");
 const HttpResponse = require("./httpResponse.js");
 const Msg = require("../models/msgModel");
+const MsgPrivate = require("../models/msgPrivateModel");
 
 async function sendMsg(content, username, status, isOnline, receivername) {
 
@@ -45,5 +46,5 @@ async function getPublicMsgs() {
 
 module.exports = {
     sendMsg: sendMsg,
-    getPublicMsgs: getPublicMsgs    
+    getPublicMsgs: getPublicMsgs
 };

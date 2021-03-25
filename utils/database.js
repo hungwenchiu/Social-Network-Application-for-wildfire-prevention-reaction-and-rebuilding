@@ -12,12 +12,21 @@
 
 // module.exports = connection;
 const mysql = require('mysql-await');
+const dotenv = require('dotenv');
 
 var db_config = {
     host: 'us-cdbr-east-03.cleardb.com',
     user: 'be16f423ed304c',
     password: '39e3a742',
     database: 'heroku_0cb61785f937545'
+};
+
+dotenv.config('./env');
+var localdb_config = {
+  host: process.env.MYSQL_HOST_URL,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE
 };
 
 var connection;
@@ -28,8 +37,16 @@ function getConnection() {
 
 function handleDisconnect() {
   console.log('db connection building');
-  connection = mysql.createConnection(db_config); // Recreate the connection, since
-                                                  // the old one cannot be reused.
+
+  if (process.env.mode === "local") {
+    console.log(`using local db`);
+    console.log(localdb_config);
+    connection = mysql.createConnection(localdb_config); // Recreate the connection, since
+  }else {
+    console.log(`using remote db`);
+    connection = mysql.createConnection(db_config); // Recreate the connection, since
+    // the old one cannot be reused.
+  }
 
   connection.connect(function(err) {              // The server is either down
     if(err) {                                     // or restarting (takes a while sometimes).

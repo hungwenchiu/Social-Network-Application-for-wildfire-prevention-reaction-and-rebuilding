@@ -17,7 +17,7 @@ class JWTService {
 
     generate_token(result){
         var token = jwt.sign(result, secret_server, {
-            expiresIn: 1200
+            expiresIn: 1200000
         });
         return token;      
     }
