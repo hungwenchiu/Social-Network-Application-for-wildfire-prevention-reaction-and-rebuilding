@@ -1,19 +1,6 @@
 # s21-ESN-SB1
 ESN  Application
 
-YOU ARE *NOT* PERMITTED TO SHARE THIS REPO OUTSIDE THIS GITHUB ORG. YOU ARE *NOT* PERMITTED TO FORK THIS REPO UNDER ANY CIRCUMSTANCES. YOU ARE *NOT* PERMITTED TO CREATE ANY PUBLIC REPOS INSIDE THE CMUSV-FSE ORGANIZATION.  YOU SHOULD HAVE LINKS FROM THIS README FILE TO YOUR PROJECT DOCUMENTS, SUCH AS YOUR REST API SPECS AND YOUR ARCHITECTURE DOCUMENT. *IMPORTANT*: MAKE SURE TO CHECK AND UPDATE YOUR LOCAL GIT CONFIGURATION IN ORDER TO MATCH YOUR LOCAL GIT CREDENTIALS TO YOUR SE-PROJECT GITHUB CREDENTIALS (COMMIT USING THE SAME EMAIL ASSOCIATED WITH YOUR GITHUB ACCOUNT): OTHERWISE YOUR COMMITS WILL NOT BE INCLUDED IN GITHUB STATISTICS AND REPO AUDITS WILL UNDERESTIMATE YOUR CONTRIBUTION.
-
-// Frontend: 
-// brower -> GET: server:routers -> : folder:views:xxx.html -> browswer: xxx.html 1. get static files here (xxx.js, xxx.png)
-// Backend: 
-// browswer:welcome .html: -> GET,POST: server:routers -> server:controllers -> browswer.welcom. html
-//                                     ||
-//                                     db
-
-// function(){
-//     send http request 
-// }
-
 ### API document link:
 import this link into postman:\
 https://www.getpostman.com/collections/50c040d8209e6717796b
