@@ -45,16 +45,3 @@ test('Changes all unread messages between sender and receiver to read', () => {
     })
   });
 
-//   const sql2 = new Promise((resolve, reject) => {
-//     const sql_set_status = "UPDATE user SET status = ? WHERE username = ?"
-//     mydb.getConnection().awaitQuery(sql_set_status, [status, username])
-//         .then((dbResp) => {
-//             resolve(dbResp);
-//         })
-//         .catch((err) => {
-//             reject(err);
-//         });
-    
-// });
-
-// return Promise.all([sql1,sql2]);

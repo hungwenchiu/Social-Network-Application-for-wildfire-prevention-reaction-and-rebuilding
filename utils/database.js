@@ -10,7 +10,6 @@
 // connection.connect()
 // /** db - end **/
 
-// module.exports = connection;
 const mysql = require('mysql-await');
 const dotenv = require('dotenv');
 
@@ -56,7 +55,6 @@ function handleDisconnect() {
   });                                     // process asynchronous requests in the meantime.
                                           // If you're also serving http, display a 503 error.
   connection.on('error', function(err) {
-    // console.log('db error', err);
     if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
       console.log('PROTOCOL_CONNECTION_LOST happened');
       handleDisconnect();                         // lost due to either server restart, or a

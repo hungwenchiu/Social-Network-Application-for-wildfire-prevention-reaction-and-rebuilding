@@ -16,21 +16,11 @@ async function findUserByNameWithoutPwd(username) {
   resMsg = await userModel
     .findUserByNameWithoutPwd(username)
     .then((dbResult) => {
-      //TODO: 
-      return new HttpResponse(
-        "User Search OK.",
-        "userSearchOk",
-        "false",
-        dbResult
-      );
+    
+      return new HttpResponse("User Search OK.", "userSearchOk", "false", dbResult);
     })
     .catch((err) => {
-      return new HttpResponse(
-        "User Search Failed.",
-        "userSearchFailed",
-        "true",
-        err
-      );
+      return new HttpResponse("User Search Failed.", "userSearchFailed", "true", err);
     });
   return resMsg;
 }
@@ -80,33 +70,9 @@ async function login(username, password) {
       }; // return a Promis; we'll wait for it to finish before continuing
     })
     .then((result) => {
-      if (result.isMatch) {
-        // successful login http response
-        userModel.setUserOnline(username)
-        
-        // create JWT token logic here
-        const token = authService.getInstance().generate_token(result);
-        return new HttpResponse(
-          "User is logged in successfully.",
-          "loginSuccessful",
-          "false",
-          {
-            "token": token,
-            "username": result.user.username,
-            "userstatus": convertToStatusDescription(result.user.status)
-          }
-        );
-      } else {
-        // incorrect password http response
-        return new HttpResponse(
-          "Username and/or password is incorrect. Please try again.",
-          "passwordIncorrect",
-          "true"
-        );
-      }
+      return setToken(result);
     })
     .then((result) => {
-
        // when a user login, broadcast updated userlist to all online users
        const result2 = SocketioService.getInstance().updateUserlist();
        return result;
@@ -114,8 +80,22 @@ async function login(username, password) {
     .catch((err) => {
       return new HttpResponse("db error.", "dbError", "true", err.message);
     });
-
   return resMsg;
+}
+
+function setToken(result) {
+    if (result.isMatch) {
+      // successful login http response
+      userModel.setUserOnline(result.user.username);
+      
+      // create JWT token logic here
+      const token = authService.getInstance().generate_token(result);
+      return new HttpResponse("User is logged in successfully.", "loginSuccessful", "false",
+        {"token": token,"username": result.user.username,"userstatus": convertToStatusDescription(result.user.status)}
+      );
+    } else {
+      return new HttpResponse("Username and/or password is incorrect. Please try again.", "passwordIncorrect","true"); // incorrect password http response
+    }
 }
 
 function checkUsernameFormat(username) {
@@ -133,7 +113,7 @@ function checkUsernameFormat(username) {
 }
 
 function verifyJwtToken(req, res, next) {
-  //TODO: verify the token is not in blacklist
+
   var token = req.headers['authorization'] || req.cookies.token;
   if (token) {
       token = token.replace("Bearer ", "") 
@@ -142,28 +122,19 @@ function verifyJwtToken(req, res, next) {
     const is_token_valid = authService.getInstance().is_token_valid(token);
     if (is_token_valid == false) {
       return res.status(403).redirect("/");       
-      // return res.status(403).send(new HttpResponse(
-      //   "Token Invalid",
-      //   "TokenInvalid",
-      //   "true"
-      // ));      
+      
     }else {
       console.log("token verified");
       next();
     }
   } else {
     return res.status(403).redirect("/");       
-    // return res.status(403).send(new HttpResponse(
-    //   "No Token Provided",
-    //   "NoTokenProvided",
-    //   "true"
-    // ))
+
   }
 }
 
 async function logout(username, token) {
 
-  //TODO: if token not expired, put it in blacklist
   await(userModel.setUserOffline(username));
   authService.getInstance().add_loggedout_token(token);
   console.log("remove socket of username: " + username)
@@ -180,32 +151,15 @@ async function getAllUsersWithoutPwd() {
     .getAllUsersWithoutPwd()
     .then((dbResult) => {
       
-      return new HttpResponse(
-        "Get All Users OK.",
-        "getAllUsersOk",
-        "false",
-        dbResult
-      );
+      return new HttpResponse("Get All Users OK.", "getAllUsersOk", "false", dbResult);
     })
     .catch((err) => {
-      return new HttpResponse(
-        "Get All Users Failed.",
-        "getAllUsersFailed",
-        "true",
-        err
-      );
+      return new HttpResponse("Get All Users Failed.", "getAllUsersFailed", "true", err);
     });
   return resMsg;
 
 }
 
-// checkPasswordFormat = (password) => {
-//   var resMsg = "";
-//   if (password.length < 4) {
-//     resMsg = "password should have at least 4 characters";
-//   }
-//   return resMsg;
-// };
 
 function convertToStatusDescription(statusCode){
   if (statusCode === "1") {

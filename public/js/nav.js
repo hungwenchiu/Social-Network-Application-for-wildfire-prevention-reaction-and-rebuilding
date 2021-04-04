@@ -22,13 +22,29 @@ const checkUnreadmsgForInboxBtn = function(username) {
 
       // inbox notification
       if (is_any_unread) {
-        // inboxBtn.css("color","red");
         inboxBtn.attr('style', 'color:red');
-        // style="color:red;"
       } else {
          inboxBtn.attr("style", "color:white");
       }
     },
   });
 }
+
+// logout button
+$(".logout-btn").on("click", (e)=>{
+  const username = sessionStorage.getItem("username");
+  $.ajax({
+      url: `/api/users/${username}/offline`,
+      type: "PUT",
+      data: username, 
+      dataType: "json",
+
+      success: function (
+          res // get return message from server
+      ) {
+          sessionStorage.removeItem("username");
+          window.location.href = "/";
+      },
+  });
+});
 

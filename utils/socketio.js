@@ -19,7 +19,7 @@ class MySocketIOService {
 
     setupSocketIOHelper() {
         this.io.on("connection", (socket) => {   
-            console.log('A user connected');
+        console.log('A user connected');
             socket.on('bindUserNameWithSocket', (username) => {
                 console.log('username binding with socket connection');
                 if (this.usernameSocketMap.has(username)) {
@@ -47,7 +47,6 @@ class MySocketIOService {
                 socket.emit('public message', msg);
             })
             resolve("msg pushed");
-            // reject(err);
         })
     } 
 
@@ -63,14 +62,7 @@ class MySocketIOService {
             
         })
 
-    }
-    // pushMsg(msg, username) {
-    //     return new Promise((resolve, reject) => {
-    //         const socket = this.usernameSocketMap.get(username);
-    //         socket.emit(msg);
-    //         resolve("msg pushed to " + username);
-    //     })
-    // }   
+    } 
 
     updateStatus(status, name) {
         return new Promise((resolve, reject) => {
@@ -97,7 +89,6 @@ class MySocketIOService {
                 this.usernameSocketMap.get(username).disconnect();
             }
             resolve("socket removed");
-            // reject(err);
         });
 
     }     

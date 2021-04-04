@@ -21,6 +21,23 @@ $("#send-status").on("submit", (e) => {
 
     //--------send new message to server------ TO DO---
     var userStatus;
+
+    userStatus = setStatus(userStatus);
+
+    const sendData = {
+        username: username,
+        status: userStatus
+    };
+    
+    updateStatus(sendData);
+    userStatus = numToText(userStatus);
+    
+    sessionStorage.setItem('userstatus', userStatus);
+    window.location.href = window.location.origin + "/esnDir";
+
+});
+
+function setStatus (userStatus) {
     if($('#okRadio').is(':checked')){
         userStatus = '1';
         console.log(userStatus);
@@ -33,33 +50,29 @@ $("#send-status").on("submit", (e) => {
         userStatus = '3';
         console.log(userStatus);
     }
+    return userStatus;
+}
 
-    const sendData = {
-        username: username,
-        status: userStatus
-    };
-    
-    
+function updateStatus(sendData){
+
     $.ajax({
-        url: `api/users/${username}/status`,
+        url: `api/users/${sendData.username}/status`,
         type: "POST",
-        data: sendData, // const {username, status} = req.body;
+        data: sendData, 
         dataType: "json",
         success: function (
             res // get return message from server
         ) {
-            // console.log(res);
         },
     });
+}
 
+function numToText (userStatus) {
     if(userStatus === '1')
         userStatus = 'OK';
     else if(userStatus === '2')
         userStatus = 'HELP';
     else if(userStatus === '3')
         userStatus = 'EMERGENCY';
-
-    sessionStorage.setItem('userstatus', userStatus);
-    window.location.href = window.location.origin + "/esnDir";
-
-});
+    return userStatus;
+}

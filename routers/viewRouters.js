@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const registerController = require("../controllers/registerController.js");
-const HttpResponse = require("../controllers/httpResponse.js");
 const cookieParser = require("cookie-parser");
 
 router.use(cookieParser());

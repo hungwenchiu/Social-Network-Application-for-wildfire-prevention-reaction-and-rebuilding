@@ -22,7 +22,7 @@ const getPrivateChatUserList = function(username) {
 
         var userCard;
         if (user.count > 0) {
-            userCard = `<div class="list-group-item" onclick="goToPrivateChatroom('${user.username}')">
+            userCard = `<div class="list-group-item" onclick="goToPrivateChatroomFromInbox('${user.username}')">
                 <div class="d-flex align-items-start">
                     <div class="flex-grow-1 ml-3"> ${user.username}</div>
                     <span style="font-size: 10px; color: red; padding-top: 5px;">
@@ -31,7 +31,7 @@ const getPrivateChatUserList = function(username) {
                 </div>
             </div>`;
         }else {
-            userCard = `<div class="list-group-item" onclick="goToPrivateChatroom('${user.username}')">
+            userCard = `<div class="list-group-item" onclick="goToPrivateChatroomFromInbox('${user.username}')">
                 <div class="d-flex align-items-start">
                     <div class="flex-grow-1 ml-3"> ${user.username}</div>
                     <div id="${user.username}-chat">
@@ -44,12 +44,6 @@ const getPrivateChatUserList = function(username) {
       });
 
       sessionStorage.setItem("privateMsgUserJson", JSON.stringify(privateMsgUserJson));
-
     },
   });
-}
-
-function goToPrivateChatroom(talkingToUsername) {
-  sessionStorage.setItem("talkingToUsername", talkingToUsername);
-  window.location.href = window.location.origin + "/privateChatroom";
 }

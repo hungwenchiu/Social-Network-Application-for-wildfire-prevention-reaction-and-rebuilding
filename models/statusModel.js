@@ -40,21 +40,6 @@ class Status{
 }
 
 
-// class Status {
-//     static get OK() {
-//         return "1";
-//     }
 
-//     static get HELP() {
-//         return "2";
-//     }
-
-//     static get EMERGENCY() {
-//         return "3";
-//     }
-    
-// }
-// //TODO: Save username, status, timestamp to Status Table
-// //TODO: Update the status field of the user table to current status -- in userModel?
 
 module.exports = Status;

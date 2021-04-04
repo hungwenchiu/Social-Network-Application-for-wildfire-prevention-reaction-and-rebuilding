@@ -37,17 +37,4 @@ test('Setting status should update status in user table', () => {
 
 
 
-// test('Setting status should update the username entry in the user table with new status', () => {
-//     return statusModel.setNewStatus('dahan', '1').then(() => {
-//         const data = mydb.getConnection().awaitQuery('SELECT status FROM user WHERE username=\'dahan\'').then((status)=> {
-//             expect(status).toEqual([{"status": "1"}]);
-//         });
-//     })
-// });
-
-// test('the data is peanut butter', () => {
-//     return expect(fetchData()).resolves.toBe('peanut butter');
-//   });
-  
-
 

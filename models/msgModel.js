@@ -14,16 +14,13 @@ class Msg {
         var senderisonline = (senderisonline == 1)?"true":"false";
         return new Promise((resolve, reject) => {
             const sql_create_msg = "INSERT INTO msg (content, sendername, senderstatus, senderisonline, receivername) VALUES ?";
-            const values = [
-            [content, sendername, senderstatus, senderisonline, receivername]
-            ];
-            mydb.getConnection().awaitQuery(sql_create_msg, [values])
+            mydb.getConnection().awaitQuery(sql_create_msg, [[[content, sendername, senderstatus, senderisonline, receivername]]])
             .then((result) => {
                 resolve(result);
             }) 
             .catch((err) => {
                 reject(err);
-            });;
+            });
         });
     }
 
@@ -39,7 +36,7 @@ class Msg {
             }) 
             .catch((err) => {
                 reject(err);
-            });;
+            });
         });        
     }
 
@@ -52,35 +49,9 @@ class Msg {
             }) 
             .catch((err) => {
                 reject(err);
-            });;
+            });
         });
     }
-
-    // static findUserByName(username){
-    //     return new Promise((resolve, reject) => {
-    //         const sql_check_user = "SELECT * FROM user WHERE username = ?"
-    //         mydb.getConnection().awaitQuery(sql_check_user, username)
-    //         .then((dbResp)=> {
-    //             resolve(dbResp);
-    //         })
-    //         .catch((err)=>{
-    //             reject(err);
-    //         });
-    //     });
-    // }
-    
-    // static findUserByNameWithoutPwd(username){
-    //     return new Promise((resolve, reject) => {
-    //         const sql_check_user = "SELECT userid, username FROM user WHERE username = ?"
-    //         mydb.getConnection().awaitQuery(sql_check_user, username)
-    //         .then((dbResp)=> {
-    //             resolve(dbResp);
-    //         })
-    //         .catch((err)=>{
-    //             reject(err);
-    //         });
-    //     });
-    // }
 
 }
 

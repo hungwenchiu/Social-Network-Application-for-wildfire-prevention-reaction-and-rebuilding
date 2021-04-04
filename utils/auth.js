@@ -1,6 +1,6 @@
 
 var jwt = require('jsonwebtoken')
-const secret_server = '12ejaisja0sijdq'; // TODO: put this into external config file (exclueded in git)
+const secret_server = '12ejaisja0sijdq'; 
 
 class JWTService {
     constructor() {
