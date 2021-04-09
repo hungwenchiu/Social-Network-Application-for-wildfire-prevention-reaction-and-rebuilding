@@ -22,6 +22,9 @@ socket.on("update status", (res) => {
 
 });
 
-new Notification().bindSessionWithNotificationTopic(socket);
+const Notif = new Notification();
+Notif.bindSessionWithNotificationTopic(socket);
+Notif.notifyAnnouncement(socket);
+
 
 socket.emit('bindUserNameWithSocket', sessionStorage.getItem("username")); // ***add username

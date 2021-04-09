@@ -24,10 +24,29 @@ async function setStatus(username, status) {
 }
 
 
-
-
-
+async function getStatusHistoryByUsername(username) {
+  resMsg = await statusModel
+    .getStatusHistoryByUsername(username)
+    .then((dbResult) => {
+      return new HttpResponse(
+        "User Status Search OK.",
+        "userStatusSearchOk",
+        "false",
+        dbResult
+      );
+    })
+    .catch((err) => {
+      return new HttpResponse(
+        "User Status Search Failed.",
+        "userStatusSearchFailed",
+        "true",
+        err
+      );
+    });
+  return resMsg;
+}
 
 module.exports = {
-    setStatus: setStatus
-  };
+  setStatus: setStatus,
+  getStatusHistoryByUsername: getStatusHistoryByUsername,
+};

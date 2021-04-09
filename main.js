@@ -1,9 +1,8 @@
 // entry point of whole app
 //Require modules
 const express = require("express");
-const connection = require('./utils/database');
+const db = require('./utils/database');
 const path = require("path");
-const http = require("http");
 const moment = require("moment");
 const expressLayouts = require("express-ejs-layouts");
 const flash = require("connect-flash");
@@ -11,7 +10,6 @@ const session = require("express-session");
 const passport = require("passport");
 const main_router = require("./routers/userRouter");
 const app = express();
-const server = http.createServer(app);
 const SocketioService = require("./utils/socketio");
 const cors = require('cors');
 app.use(cors());
@@ -35,11 +33,26 @@ app.use("/api", require("./routers/registrationRouter.js"));
 app.use("/api", require("./routers/userRouter.js"));
 app.use("/api", require("./routers/publicChatRouter.js"));
 app.use("/api", require("./routers/privateChatRouter.js"));
+app.use("/api", require("./routers/announcementRouter.js"));
+app.use("/api", require("./routers/statusRouter.js"));
 app.use("/", require("./routers/viewRouters.js"));
 
-//Start up server
-const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
 // Socketio set up 
-const socketioServiceInstance = new SocketioService(server);
+const http = require("http");
+const server = http.createServer(app);
+const socketioService = new SocketioService(server);
+
+// server.on('close', function() {
+//     console.log(' Stopping Server and any pending connection ...');
+//     db.endConnection();
+// });   
+
+// process.on('SIGINT', function() {
+//     server.close();
+// });   
+
+module.exports = {
+    server: server,
+    db: db,
+    socketioService: socketioService
+}

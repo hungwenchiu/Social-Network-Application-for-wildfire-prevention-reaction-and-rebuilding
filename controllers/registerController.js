@@ -146,19 +146,19 @@ async function logout(username, token) {
   return new HttpResponse("Socket is removed.", "socketRemoved", "false");  
 }
 
-async function getAllUsersWithoutPwd() {
-  var resMsg = await userModel
-    .getAllUsersWithoutPwd()
-    .then((dbResult) => {
+// async function getAllUsersWithoutPwd() {
+//   var resMsg = await userModel
+//     .getAllUsersWithoutPwd()
+//     .then((dbResult) => {
       
-      return new HttpResponse("Get All Users OK.", "getAllUsersOk", "false", dbResult);
-    })
-    .catch((err) => {
-      return new HttpResponse("Get All Users Failed.", "getAllUsersFailed", "true", err);
-    });
-  return resMsg;
+//       return new HttpResponse("Get All Users OK.", "getAllUsersOk", "false", dbResult);
+//     })
+//     .catch((err) => {
+//       return new HttpResponse("Get All Users Failed.", "getAllUsersFailed", "true", err);
+//     });
+//   return resMsg;
 
-}
+// }
 
 
 function convertToStatusDescription(statusCode){
@@ -172,10 +172,76 @@ function convertToStatusDescription(statusCode){
   return statusCode;
 }
 
+
+//start seach user by status/username ------------------------------
+
+//search user by status
+function getUsersbyStatus(status) {
+  return userModel.findUserByStatus(status)
+      .then((dbResult) => {
+          if (dbResult.case === "legal") {
+              return new HttpResponse("UserStatus is queried.", "usersstatusQueried", "false", dbResult.data);
+          } 
+      })
+      .catch((err) => {
+          return new HttpResponse("db error.", "dbError", "true", err);
+      });
+}
+
+
+
+
+//search user by username
+async function getUsers(keywords) {
+  var resMsg;
+  if (keywords) {
+      resMsg = await findUserByNameKeywordsHelper(keywords);
+      console.log(`searching by keyword ${keywords}`);
+  } else {
+      console.log('keyword is null');
+      resMsg = await findUsersHelper();
+  }
+  return resMsg;
+}
+
+
+function findUserByNameKeywordsHelper(keywords) {
+  return userModel.findUserByNameKeywords(keywords)
+      .then((dbResult) => {
+          if (dbResult.case === "legal") {
+              return new HttpResponse("User is queried.", "userQueried", "false", dbResult.data);
+          } else if (dbResult.case === "illegal") {
+              return new HttpResponse("Only Stop Words.", "StopWordsOnly", "false", dbResult.data);
+          }
+      })
+      .catch((err) => {
+          return new HttpResponse("db error.", "dbError", "true", err);
+      });
+}
+
+function findUsersHelper() {
+  return userModel.getAllUsersWithoutPwd()
+      .then((dbResult) => {
+          return new HttpResponse(
+              "User is queried.",
+              "userQueried",
+              "false",
+              dbResult
+          );
+      })
+      .catch((err) => {
+          return new HttpResponse("db error.", "dbError", "true", err);
+      });
+}
+
+
+
 module.exports = {
   createUser: createUser,
   findUserByNameWithoutPwd: findUserByNameWithoutPwd,
-  getAllUsersWithoutPwd: getAllUsersWithoutPwd,
+  //getAllUsersWithoutPwd: getAllUsersWithoutPwd,
+  getUsers: getUsers,
+  getUsersbyStatus: getUsersbyStatus,
   login: login,
   verifyJwtToken: verifyJwtToken,
   logout: logout

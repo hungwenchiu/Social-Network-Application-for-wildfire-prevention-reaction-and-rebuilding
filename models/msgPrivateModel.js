@@ -1,5 +1,5 @@
 const mydb = require("../utils/database.js");
-
+const stopWordsModal = require("../utils/stopWords.js");
 class Msg {
   constructor(content, sendername, senderstatus, receivername, receiverstatus) {
     this.content = content;
@@ -62,6 +62,48 @@ class Msg {
         });
     });
   }
+
+  static findMsgsBetweenByKeywords(keywords, username1, username2) {
+    return new Promise((resolve, reject) => {
+      const keywordList = keywords.split(/\s+/);
+
+      if (!stopWordsModal.checkNonStopWordExist(keywordList)) {
+        resolve({ case: "illegal", data: [] });
+      } else {
+        const sql_query_private_msg = this.generatePrivateMsgsByKeywordsSQL(
+          keywordList, username1, username2
+        );
+        mydb
+          .getConnection()
+          .awaitQuery(sql_query_private_msg)
+          .then((result) => {
+            resolve({ case: "legal", data: result });
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      }
+    });
+  }
+
+  static generatePrivateMsgsByKeywordsSQL(keywordList, username1, username2) {
+    var result = `SELECT * FROM privatemsg `
+    result += `WHERE ((senderName = "${username1}" AND receiverName = "${username2}") OR ( senderName = "${username2}" AND receiverName = "${username1}")) `;
+    result += `AND (`;
+    for (var i = 0; i < keywordList.length; ++i) {
+      const keyword = keywordList[i].trim();
+      if (keyword === "") continue;
+      if (stopWordsModal.getStopWords().includes(keyword)) {
+        continue;
+      }
+      result += `content LIKE "%${keywordList[i]}%" OR `;
+    }
+    result = result.substring(0, result.length - 3);
+    result += `)`;
+    result += " ORDER BY ts DESC";
+    return result;
+  }
+
 
   // find all messages to a receiver
   static findMsgsByReceiverUsername(username) {

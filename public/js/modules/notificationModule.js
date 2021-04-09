@@ -1,10 +1,12 @@
 // append new msg/msg record to content-list
 import Msg from '../modules/msgModule.js';
+import Announcement from '../modules/announcementModule.js';
 export default class Notification {
 
   constructor() {}
 
   static getUserCardPage(senderName) {
+    // TODO: BUG, should be privateMsgs.js line 25
     return `<div class="list-group-item">
         <div class="d-flex align-items-start">
             <div class="flex-grow-1 ml-3"> ${senderName}</div>
@@ -53,11 +55,14 @@ export default class Notification {
           const notificationId = "#" + senderName + "-chat";
           const notification = $(notificationId);
           const reddot = Notification.getRedDotPage();
+          notification.empty();
           notification.append(reddot);
         } else {
           const privateChatUserList = $("#private-chat-user-list");
           const userCard = Notification.getUserCardPage(senderName);
           privateChatUserList.append(userCard);
+          privateMsgUserJson[senderName] = "exist";
+          sessionStorage.setItem("privateMsgUserJson", JSON.stringify(privateMsgUserJson));
         }
       }
 
@@ -67,5 +72,24 @@ export default class Notification {
 
     })
   }
+
+  notifyAnnouncement(socket){
+      socket.on("announcement", (res) => {
+        console.log("announcement: socket");
+        if($('title').text() === "Announcement")  
+        {
+          var data = res[0];
+          new Announcement().printAnnouncement(data.sendername, data.content, data.ts);
+        }
+        else
+        {
+          console.log("announcement turn red");
+          $('#announcement-btn').attr('style', 'color:red');
+          sessionStorage.setItem('readAnnouncement', 'unread');
+        }
+    });
+  }
+  
 }
+
 

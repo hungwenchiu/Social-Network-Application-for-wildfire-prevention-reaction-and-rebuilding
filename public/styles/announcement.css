@@ -91,7 +91,6 @@ body {
     color:#fff;
     font-style:inherit;
     font-weight: bolder;
-    padding: .1rem 1rem;
 }
 .logout-btn {
     color:#fff;
@@ -281,11 +280,5 @@ body {
     padding-left:10%;
     padding-right:10%;
     overflow: scroll;
-}
-.status-radio-btn {
-    padding: 1rem 1rem;
-    border-bottom: 1px solid #dee2e6;
-    border-top-left-radius: .3rem;
-    border-top-right-radius: .3rem;
 }
 /* ESN directory */

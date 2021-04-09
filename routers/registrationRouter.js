@@ -16,14 +16,26 @@ router.put("/users/:username/online", async function (req, res) {
 });
 router.get("/users", async function (req, res) {
   var resMsg;
-  if (req.query.username)
-    resMsg = await registerController.findUserByNameWithoutPwd(req.query.username);
+  if(req.query.status)
+  {
+    console.log('req.query.status: ' + req.query.status);
+    resMsg = await registerController.getUsersbyStatus(req.query.status);
+  }
   else
-    resMsg = await registerController.getAllUsersWithoutPwd();
+  {
+    console.log('req.query.username: ' + req.query.username);
+    resMsg = await registerController.getUsers(req.query.username); 
+  }
+    
+
   res.send(resMsg);
 });
+
+
+
 router.get("/users/:username", async function (req, res) {
   var resMsg = await registerController.findUserByNameWithoutPwd(req.params.username);
   res.send(resMsg);
 });
+
 module.exports = router;

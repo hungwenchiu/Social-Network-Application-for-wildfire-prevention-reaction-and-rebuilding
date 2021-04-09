@@ -4,21 +4,9 @@ const HttpResponse = require("./httpResponse.js");
 const Msg = require("../models/msgModel");
 const MsgPrivate = require("../models/msgPrivateModel");
 
-async function sendPrivateMsg(
-  content,
-  sendingUsername,
-  senderStatus,
-  receivingUsername,
-  receiverStatus
-) {
+async function sendPrivateMsg(content, sendingUsername, senderStatus, receivingUsername, receiverStatus) {
   // step01: store msg in db
-  const resMsg = await MsgPrivate.create(
-    content,
-    sendingUsername,
-    senderStatus,
-    receivingUsername,
-    receiverStatus
-  )
+  const resMsg = await MsgPrivate.create(content, sendingUsername, senderStatus, receivingUsername, receiverStatus)
     .then((dbResult) => {
       console.log("PrivateMsg table updated row: " + dbResult.affectedRows);
       return new HttpResponse(
@@ -64,15 +52,38 @@ async function findSendersWithUnreadMsgsByReceiver(username) {
     return res;
 }
 
-async function findMsgsBetween(sendingUsername, receivingUsername) {
-    const res = await MsgPrivate.findMsgsBetween(sendingUsername, receivingUsername)
+async function findMsgsBetween(keywords, sendingUsername, receivingUsername) {
+    var resMsg;
+    if (keywords) {
+        resMsg = await findMsgsBetweenByKeywordsHelper(keywords, sendingUsername, receivingUsername);
+    } else {
+        resMsg = await findMsgsBetweenHelper(sendingUsername, receivingUsername);
+    }
+    return resMsg;
+}
+
+function findMsgsBetweenHelper(sendingUsername, receivingUsername) {
+    return MsgPrivate.findMsgsBetween(sendingUsername, receivingUsername)
     .then((dbResult) => {
         return new HttpResponse("found private msgs between sender and receiver.", "PrivateMsgsFound", "false", dbResult);
     })
     .catch((err) => {
         return new HttpResponse("db error.", "dbError", "true", err);
     });
-    return res;
+}
+
+function findMsgsBetweenByKeywordsHelper(keywords, sendingUsername, receivingUsername) {
+  return MsgPrivate.findMsgsBetweenByKeywords(keywords, sendingUsername, receivingUsername)
+    .then((dbResult) => {
+      if (dbResult.case === "legal") {
+        return new HttpResponse("found private msgs between sender and receiver.", "PrivateMsgsFound", "false", dbResult.data);
+      } else if (dbResult.case === "illegal") {
+        return new HttpResponse("Only Stop Words.", "StopWordsOnly", "false", dbResult.data);
+      }
+    })
+    .catch((err) => {
+      return new HttpResponse("db error.", "dbError", "true", err);
+    });
 }
 
 async function updateToReadBetween(sendingUsername, receivingUsername) {

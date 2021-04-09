@@ -14,7 +14,7 @@ router.get("/users/:username/private", async function (req, res) {
     res.send(resMsg);
 });
 router.get("/messages/private/:sendingUsername/:receivingUsername", async function (req, res) {
-        const resMsg = await privateChatController.findMsgsBetween(req.params.sendingUsername, req.params.receivingUsername);
+        const resMsg = await privateChatController.findMsgsBetween(req.query.keywords, req.params.sendingUsername, req.params.receivingUsername);
         res.send(resMsg);
     }
 );

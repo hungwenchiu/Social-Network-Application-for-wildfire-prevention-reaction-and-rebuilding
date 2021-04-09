@@ -1,26 +1,24 @@
-import Msg from './modules/msgModule.js';
+import Announcement from './modules/announcementModule.js';
 const username = sessionStorage.getItem('username');
-const userstatus = sessionStorage.getItem('userstatus');
-
-
 
 $(document).ready(() => {
     sessionStorage.removeItem("talkingToUsername");
     sessionStorage.removeItem("privateMsgUserJson");
     // when loading, get all message records
     $.ajax({
-        url: "/api/messages/public",
+        url: "/api/announcement",
         type: "GET",
         success: function (res) {
             
             const {data} = res;
             $.each(data, (index, e)=>{
-                new Msg().printMsg(e.sendername, e.content, e.ts, e.senderstatus);
-         
+                new Announcement().printAnnouncement(e.sendername, e.content, e.ts);
             });
 
         },
     });
+
+    //check privlege to load the form
 
 });
 
@@ -34,21 +32,23 @@ $("#btn-send").on("submit", (e) => {
     const sendData = {
         username: username,
         content: $("#msg-txt").val(),
-        status: userstatus,
-        isOnline: true
+
     };
         
     $.ajax({
-        url: "/api/messages/public",
+        url: "/api/announcement",
         type: "POST",
         data: sendData, 
         dataType: "json",
         success: function (
             res // get return message from server
         ) {
-           
         },
     });
 
     $("#msg-txt").val("");
 });
+
+
+
+

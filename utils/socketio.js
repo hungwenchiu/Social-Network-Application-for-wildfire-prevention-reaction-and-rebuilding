@@ -4,14 +4,28 @@ class MySocketIOService {
         if (!MySocketIOService._instance) {
             MySocketIOService._instance = this;
         }
-
-        this.io = socketio(server);
-        this.usernameSocketMap = new Map();
-        this.socketUsernameMap = new Map();
-        this.setupSocketIOHelper();
+        
+        if (process.env.mode === "local") {
+            console.log("local mode, so no socket created");
+        }else {
+            this.io = socketio(server);
+            this.usernameSocketMap = new Map();
+            this.socketUsernameMap = new Map();
+            this.setupSocketIOHelper();
+        }
 
         return MySocketIOService._instance;
     }
+
+    // closeSocketServer() {
+    //     return new Promise((resolve, reject) => {
+    //         if (this.io) {
+    //             this.io.close(()=>{
+    //                 resolve();
+    //             });
+    //         }
+    //     })
+    // }
 
     static getInstance() {
         return this._instance;  
@@ -43,32 +57,49 @@ class MySocketIOService {
     
     pushMsg(msg) {
         return new Promise((resolve, reject) => {
-            this.usernameSocketMap.forEach((socket, username, map)=>{
-                socket.emit('public message', msg);
-            })
+            if (this.usernameSocketMap) {
+                this.usernameSocketMap.forEach((socket, username, map)=>{
+                    socket.emit('public message', msg);
+                })
+            }
             resolve("msg pushed");
+        })
+    } 
+
+    pushAnnouncement(msg,topic) {
+        return new Promise((resolve, reject) => {
+            if (this.usernameSocketMap) {
+                this.usernameSocketMap.forEach((socket, username, map)=>{
+                    socket.emit(topic, msg);
+                })
+            }
+            resolve("announcement pushed");
         })
     } 
 
     pushMsgToUser(msg, topic, username) {
         return new Promise((resolve, reject) => {
-            if (this.usernameSocketMap.has(username)) {
-                const sokcet = this.usernameSocketMap.get(username);
-                sokcet.emit(topic, msg);
-                resolve("msg pushed to " + username);
-            }else{
+            if (this.usernameSocketMap) {
+                if (this.usernameSocketMap.has(username)) {
+                    const sokcet = this.usernameSocketMap.get(username);
+                    sokcet.emit(topic, msg);
+                    resolve("msg pushed to " + username);
+                }
                 resolve("user is not online");
+            }else{
+                resolve("this is local mode, so no socket is created");
             }
-            
         })
 
     } 
 
     updateStatus(status, name) {
         return new Promise((resolve, reject) => {
-            this.usernameSocketMap.forEach((socket, username, map)=>{
-                socket.emit('update status', [status, name]);
-            })
+            if (this.usernameSocketMap) {
+                this.usernameSocketMap.forEach((socket, username, map)=>{
+                    socket.emit('update status', [status, name]);
+                })
+            }
             resolve("update status");
         })
     } 
@@ -76,17 +107,21 @@ class MySocketIOService {
     // (dynamic update) If user login or logout, broadcast the updated userlist to all online users
     updateUserlist() {
         return new Promise((resolve, reject) => {
-            this.usernameSocketMap.forEach((socket, username, map)=>{
-                socket.emit('update userlist');
-            })
+            if (this.usernameSocketMap) {
+                this.usernameSocketMap.forEach((socket, username, map)=>{
+                    socket.emit('update userlist');
+                })
+            }
             resolve("update userlist");
         })
     } 
 
     removeSocket(username) {
         return new Promise((resolve, reject) => {
-            if (this.usernameSocketMap.has(username)) {
-                this.usernameSocketMap.get(username).disconnect();
+            if (this.usernameSocketMap) {
+                if (this.usernameSocketMap.has(username)) {
+                    this.usernameSocketMap.get(username).disconnect();
+                }
             }
             resolve("socket removed");
         });

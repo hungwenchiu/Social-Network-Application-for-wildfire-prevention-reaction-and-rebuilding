@@ -2,12 +2,23 @@
   "name": "s21-esn-sb1",
   "version": "1.0.0",
   "description": "ESN Application",
-  "main": "main.js",
+  "main": "start.js",
   "scripts": {
-    "test": "jest --coverage",
-    "testlocal": "mode=local jest --coverage",
-    "start": "node main.js",
-    "dev": "nodemon main"
+    "test": "cross-env mode=local jest --coverage --maxWorkers=1",
+    "testlocal": "cross-env mode=local jest --coverage --maxWorkers=1",
+    "testfileapi": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-api-sample.spec.js",
+    "testfileuser": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-user-unit.spec.js",
+    "testfilestatus": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-status-unit.spec.js",
+    "testfileprivatemsg": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-msg-unit-spec.js",
+    "testfileannouncement": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-announcement-unit.spec.js",
+    "testfilesearchapi": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-search-integration.spec.js",
+    "testannouncementapi": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-announcement-integration.spec.js",
+    "testfileuserapi": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-user-integration.spec.js",
+    "testfileregisterapi": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-registration-integration.spec.js",
+    "testfileprivatechatapi": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-msgPrivate-integration.spec.js",
+    "testfilepublicchatapi": "cross-env mode=local jest --coverage --maxWorkers=1 ./__tests__/test-msgPublic-integration.spec.js",
+    "start": "node start.js",
+    "dev": "nodemon start"
   },
   "repository": {
     "type": "git",
@@ -25,6 +36,7 @@
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
@@ -40,7 +52,8 @@
     "passport-jwt": "^4.0.0",
     "path": "^0.12.7",
     "reserved-words": "^0.1.2",
-    "socket.io": "^3.1.2"
+    "socket.io": "^3.1.2",
+    "superagent": "^6.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"

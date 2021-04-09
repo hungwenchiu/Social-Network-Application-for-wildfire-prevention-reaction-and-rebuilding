@@ -28,6 +28,10 @@ router.get("/esnDir", (req, res) => {
   res.render("esnDir");
 });
 
+router.get("/announcement", (req, res) => {
+  res.render("announcement");
+})
+
 router.get("/chatroom", (req, res) => {
   res.render("chatroom");
 });

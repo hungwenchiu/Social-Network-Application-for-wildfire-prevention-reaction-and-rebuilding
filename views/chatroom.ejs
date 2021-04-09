@@ -16,16 +16,7 @@
             <!-- page-content-wrapper -->
             <div id="page-content-wrapper">
                 <!-- navbar -->
-                <nav class="navbar navbar-dark">
-                    <div class="mr-auto d-inline-flex">
-                        <a class="nav-link nav-txt" href="/esnDir" id="dir-btn"><em class="fas fa-users fa-lg" aria-hidden="true"></em></a>
-                        <a class="nav-link nav-txt" href="/chatroom" id="public-chat-btn"><em class="fa fa-comments fa-lg" aria-hidden="true"></em></a>
-                        <a class="nav-link nav-txt" href="/privateMsgs" id="inbox-btn"><em class="fas fa-envelope fa-lg" aria-hidden="true"></em></a>
-                        <a class="nav-link nav-txt" href="/status" id="status-btn"><em class="fa fa-medkit fa-lg" aria-hidden="true"></em></a>
-                        <!-- <a class="nav-link nav-txt" href="#"><em class="fas fa-camera fa-lg"></em></a> -->
-                        <a class="nav-link nav-txt logout-btn" href="#"><em class="fas fa-sign-out-alt fa-lg"></em></a>
-                    </div>
-                </nav>
+                <div id="nav-template"></div>
                 <!-- navbar -->
                 <div id="fieldset-container">
                     <fieldset>
@@ -55,9 +46,32 @@
                         <!-- Public chat Page Content -->
                     </fieldset>
                 </div>
+                <div id="search-box-view"></div>
                
             </div>
             <!-- /#page-content-wrapper -->
+
+            <!-- Search pop up dialogue -->
+            <div class="modal fade" id="search-box" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+                        </div>
+                        <div class="modal-body mx-3">
+                            <div class="md-form mb-3">
+                                <input type="text" id="keyword" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary">Search</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!-- End of search pop up dialogue -->
+
         </div>
         <!-- /#wrapper -->
 

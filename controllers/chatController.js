@@ -1,7 +1,7 @@
 const SocketioService = require("../utils/socketio");
 const MsgModel = require("../models/msgModel");
 const HttpResponse = require("./httpResponse.js");
-const Msg = require("../models/msgModel");
+const Msg = require("../models/msgModel"); //check if works without it
 const MsgPrivate = require("../models/msgPrivateModel");
 
 async function sendMsg(content, username, status, isOnline, receivername) {
@@ -30,18 +30,44 @@ async function sendMsg(content, username, status, isOnline, receivername) {
     return resMsg;
 }
 
-async function getPublicMsgs() {
-    console.log("getPublicMsgs")
+async function getPublicMsgs(keywords) {
+    console.log("getPublicMsgs");
+    var resMsg;
+    if (keywords) {
+        resMsg = await findPublicMsgsByKeywordsHelper(keywords);
+    } else {
+        resMsg = await findPublicMsgsHelper();
+    }
+    return resMsg;
+}
 
-    const resMsg = await MsgModel.findPublicMsgs()
+function findPublicMsgsByKeywordsHelper(keywords) {
+    return MsgModel.findPublicMsgsByKeywords(keywords)
+      .then((dbResult) => {
+        if (dbResult.case === "legal") {
+          return new HttpResponse("PublicMsg is queried.", "publicMsgQueried", "false", dbResult.data);
+        } else if (dbResult.case === "illegal") {
+          return new HttpResponse("Only Stop Words.", "StopWordsOnly", "false", dbResult.data);
+        }
+      })
+      .catch((err) => {
+        return new HttpResponse("db error.", "dbError", "true", err);
+      });
+}
+
+function findPublicMsgsHelper() {
+  return MsgModel.findPublicMsgs()
     .then((dbResult) => {
-        return new HttpResponse("PublicMsg is queried.", "publicMsgQueried", "false", dbResult);
+      return new HttpResponse(
+        "PublicMsg is queried.",
+        "publicMsgQueried",
+        "false",
+        dbResult
+      );
     })
     .catch((err) => {
-        return new HttpResponse("db error.", "dbError", "true", err);
+      return new HttpResponse("db error.", "dbError", "true", err);
     });
-    return resMsg;
-
 }
 
 module.exports = {

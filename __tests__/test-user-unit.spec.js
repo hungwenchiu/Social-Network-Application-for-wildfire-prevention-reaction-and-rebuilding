@@ -1,14 +1,18 @@
 const User = require("../models/userModel");
-const mydb = require('../utils/database.js');
+var app = require('../main.js');
 
-beforeAll(()=>{
-    var user = mydb.getConnection().awaitQuery("TRUNCATE user");
-  });
+beforeAll(async()=>{
+    await app.server.listen(8080);
+    await app.db.getConnection().awaitQuery("TRUNCATE user");
+});
 
-afterAll(()=>{
-    var user = mydb.getConnection().awaitQuery("TRUNCATE user");
-   
-  });
+afterAll(async()=>{
+    await app.db.getConnection().awaitQuery("TRUNCATE user");
+    if (app.server.listening) {
+        await app.db.endConnection();
+        await app.server.close();
+    }    
+});
   
 describe('User registration ', () => {
     test('Registers a User', async () => {
