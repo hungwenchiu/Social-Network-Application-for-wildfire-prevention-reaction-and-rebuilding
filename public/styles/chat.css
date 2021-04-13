@@ -243,7 +243,7 @@ body {
 
 
 .panel-footer {
-    margin-top: 6%;
+    margin-top: 1%;
     background-color: transparent;
     border-top: 1px solid transparent;
     border-bottom-right-radius: 3px;
@@ -261,12 +261,16 @@ body {
     background-color: #0062cc;
 }
 
-.bottom-navbar {
+#bottom-nav-template{
+    width:100%;
+    height: 40px;
+    position: fixed;
+    bottom: 0px;
+}
+
+#bottom-nav-template .navbar {
     background-color: #0062cc;
     overflow: hidden;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
 }
 
 .input-group {
