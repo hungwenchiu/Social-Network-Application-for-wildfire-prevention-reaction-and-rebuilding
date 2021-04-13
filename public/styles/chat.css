@@ -261,6 +261,14 @@ body {
     background-color: #0062cc;
 }
 
+.bottom-navbar {
+    background-color: #0062cc;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
 .input-group {
     padding-left: 10px;
     padding-right: 10px;
