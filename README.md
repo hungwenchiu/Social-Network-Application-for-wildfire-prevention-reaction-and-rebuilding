@@ -1,3 +1,4 @@
+![Screen Shot 2021-07-27 at 11 12 21 AM](https://user-images.githubusercontent.com/64296962/127206237-c0a0d9dd-0cb5-4f17-a22f-db2d4474c9dd.png)
 Designed a web application in MVC architecture by using JavaScript to provide the functionalities of locating wildfire places, sending announcements, chatting in private, and creating online activities to share with people.
 
 ## login & Welcome page
@@ -9,7 +10,10 @@ Designed a web application in MVC architecture by using JavaScript to provide th
 ![Screen Shot 2021-07-27 at 11 08 04 AM](https://user-images.githubusercontent.com/64296962/127205649-a7a9bae7-7133-4641-8045-a59092ad01dd.png)
 ![Screen Shot 2021-07-27 at 11 08 54 AM](https://user-images.githubusercontent.com/64296962/127205761-7ea6df86-bd84-4f53-837a-d215043c37da.png)
 
-##
+## Private chat (Using socket.io fro realtime display)
+![Screen Shot 2021-07-27 at 11 13 54 AM](https://user-images.githubusercontent.com/64296962/127206436-19cd76fa-9102-4f32-8f92-415b7ec15606.png)
+![Screen Shot 2021-07-27 at 11 12 21 AM](https://user-images.githubusercontent.com/64296962/127206447-e412cf0c-8d60-413c-8cf2-4264bf4ad1b0.png)
+
 
 
 
