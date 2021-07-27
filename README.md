@@ -4,8 +4,12 @@ Designed a web application in MVC architecture by using JavaScript to provide th
 ![Screen Shot 2021-07-27 at 11 02 22 AM](https://user-images.githubusercontent.com/64296962/127205309-f53babb8-dcd4-43f6-b553-b57d8418e9f0.png)
 ![Screen Shot 2021-07-27 at 11 06 32 AM](https://user-images.githubusercontent.com/64296962/127205411-1666b466-8c01-4767-8660-908f23540f8c.png)
 
+## User list & Chat room
+### user can chat with others in the chat room
+![Screen Shot 2021-07-27 at 11 08 04 AM](https://user-images.githubusercontent.com/64296962/127205649-a7a9bae7-7133-4641-8045-a59092ad01dd.png)
+![Screen Shot 2021-07-27 at 11 08 54 AM](https://user-images.githubusercontent.com/64296962/127205761-7ea6df86-bd84-4f53-837a-d215043c37da.png)
 
-
+##
 
 
 
