@@ -1,7 +1,6 @@
 Designed a web application in MVC architecture by using JavaScript to provide the functionalities of locating wildfire places, sending announcements, chatting in private, and creating online activities to share with people.
 
 1. login:
-![Screen Shot 2021-07-27 at 11 02 22 AM](https://user-images.githubusercontent.com/64296962/127205167-ba87b98b-1b38-4560-b704-879efd8da648.png)
 
 3. 
 
